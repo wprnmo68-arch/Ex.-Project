@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ResepDapurmu | Pencari Resep Modern</title>
+    <title>Recipio | Pencari Resep Modern</title>
     <!-- Tailwind CSS CDN & Konfigurasi Dark Mode -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -19,8 +19,8 @@
     <link rel="stylesheet" href="style.css">
     <!-- Skrip Anti-Flicker (Memuat tema tersimpan sebelum halaman dirender) -->
     <script>
-        if (localStorage.getItem('resepdapurmu_theme') === 'dark' || 
-           (!('resepdapurmu_theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        if (localStorage.getItem('recipio_theme') === 'dark' || 
+           (!('recipio_theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
         } else {
             document.documentElement.classList.remove('dark');
@@ -36,7 +36,7 @@
                 <div class="bg-gradient-to-tr from-orange-500 to-amber-400 p-2 rounded-xl text-white shadow-md shadow-orange-500/20">
                     <i data-lucide="chef-hat" class="w-6 h-6"></i>
                 </div>
-                <span class="font-extrabold text-xl tracking-tight text-slate-900 dark:text-white">Resep<span class="text-orange-500">Dapurmu</span></span>
+                <span class="font-extrabold text-xl tracking-tight text-slate-900 dark:text-white">Recip<span class="text-orange-500">io</span></span>
             </div>
 
             <div class="flex items-center gap-2.5">
@@ -124,70 +124,4 @@
         </div>
 
         <!-- Recipe Grid -->
-        <div id="recipe-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            <!-- Kartu resep akan dirender otomatis oleh JavaScript -->
-        </div>
-    </main>
-
-    <!-- Recipe Detail Modal -->
-    <div id="recipe-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 sm:p-6 bg-slate-900/70 dark:bg-black/80 backdrop-blur-sm transition-opacity">
-        <div class="bg-white dark:bg-slate-900 rounded-3xl max-w-3xl w-full max-h-[90vh] overflow-hidden shadow-2xl border border-transparent dark:border-slate-800 flex flex-col animate-modal">
-            <!-- Modal Header Image -->
-            <div class="relative h-64 sm:h-72 shrink-0">
-                <img id="modal-img" src="" alt="Foto Makanan" class="w-full h-full object-cover">
-                <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-900/30 to-transparent"></div>
-                
-                <button id="close-modal" class="absolute top-4 right-4 bg-white/90 dark:bg-slate-900/90 hover:bg-white dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 p-2 rounded-full shadow-lg transition-transform hover:scale-105 cursor-pointer">
-                    <i data-lucide="x" class="w-5 h-5"></i>
-                </button>
-
-                <div class="absolute bottom-4 left-6 right-6 text-white">
-                    <div class="flex flex-wrap gap-2 mb-2">
-                        <span id="modal-category" class="px-2.5 py-0.5 rounded-lg text-xs font-semibold bg-orange-500 text-white">Kategori</span>
-                        <span id="modal-area" class="px-2.5 py-0.5 rounded-lg text-xs font-semibold bg-white/20 backdrop-blur-md text-white">Asal Negara</span>
-                    </div>
-                    <h2 id="modal-title" class="text-2xl sm:text-3xl font-extrabold leading-tight">Nama Resep</h2>
-                </div>
-            </div>
-
-            <!-- Modal Body (Scrollable) -->
-            <div class="p-6 sm:p-8 overflow-y-auto space-y-6">
-                <!-- Action Bar -->
-                <div class="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-slate-100 dark:border-slate-800">
-                    <button id="modal-fav-btn" class="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold border border-slate-200 dark:border-slate-700 hover:bg-rose-50 dark:hover:bg-rose-500/10 hover:border-rose-200 transition-colors">
-                        <i data-lucide="heart" class="w-4 h-4"></i>
-                        <span>Simpan ke Favorit</span>
-                    </button>
-                    <a id="modal-youtube" href="#" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold bg-red-50 dark:bg-red-500/15 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-500/25 transition-colors">
-                        <i data-lucide="youtube" class="w-4 h-4"></i>
-                        <span>Tonton Video Tutorial</span>
-                    </a>
-                </div>
-
-                <!-- Ingredients -->
-                <div>
-                    <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
-                        <i data-lucide="shopping-basket" class="w-5 h-5 text-orange-500"></i> Bahan-Bahan
-                    </h3>
-                    <ul id="modal-ingredients" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                        <!-- List bahan dirender via JS -->
-                    </ul>
-                </div>
-
-                <!-- Instructions -->
-                <div>
-                    <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
-                        <i data-lucide="flame" class="w-5 h-5 text-orange-500"></i> Cara Membuat
-                    </h3>
-                    <div id="modal-instructions" class="text-slate-600 dark:text-slate-300 text-sm sm:text-base leading-relaxed space-y-3 whitespace-pre-line">
-                        <!-- Langkah memasak dirender via JS -->
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Custom JS -->
-    <script src="script.js"></script>
-</body>
-</html>
+        <div id="recipe-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-
