@@ -30,7 +30,7 @@ const modalFavBtn = document.getElementById('modal-fav-btn');
 
 // State Aplikasi
 const API_BASE = 'https://www.themealdb.com/api/json/v1/1';
-let favorites = JSON.parse(localStorage.getItem('resepdapurmu_favorites')) || [];
+let favorites = JSON.parse(localStorage.getItem('recipio_favorites')) || [];
 let currentModalMeal = null;
 
 // Jalankan saat halaman pertama kali dimuat
@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // Logika Dark / Light Mode
 themeToggleBtn.addEventListener('click', () => {
     const isDark = document.documentElement.classList.toggle('dark');
-    localStorage.setItem('resepdapurmu_theme', isDark ? 'dark' : 'light');
+    localStorage.setItem('recipio_theme', isDark ? 'dark' : 'light');
     updateThemeIcon();
 });
 
@@ -61,7 +61,7 @@ searchForm.addEventListener('submit', (e) => {
     const query = searchInput.value.trim();
     if (query) {
         clearActiveChips();
-        sectionTitle.textContent = `Hasil Pencarian: "${query}"`;
+        sectionTitle.textContent = `Hasil Pencarian: "\${query}"`;
         fetchMealsBySearch(query);
     }
 });
@@ -73,17 +73,7 @@ catChips.forEach(chip => {
         chip.classList.add('active');
         const category = chip.dataset.query;
         searchInput.value = '';
-        sectionTitle.textContent = `Kategori: ${chip.textContent}`;
-        fetchMealsByCategory(category);
-    });
-});
-
-// Event Listener Tombol Acak Resep
-btnRandom.addEventListener('click', async () => {
-    clearActiveChips();
-    showLoader(true);
-    try {
-        const res = await fetch(`${API_BASE}/random.php`);
+        sectionTitle.textContent = `Kategori: ${chip.textContent}`; fetchMealsByCategory(category); }); });  // Event Listener Tombol Acak Resep btnRandom.addEventListener('click', async () => { clearActiveChips(); showLoader(true); try { const res = await fetch(`${API_BASE}/random.php`);
         const data = await res.json();
         if (data.meals) {
             openRecipeModal(data.meals[0]);
@@ -98,7 +88,7 @@ btnRandom.addEventListener('click', async () => {
 // Event Listener Tombol Lihat Favorit
 btnFavorites.addEventListener('click', () => {
     clearActiveChips();
-    sectionTitle.textContent = `Resep Favorit Tersimpan (${favorites.length})`;
+    sectionTitle.textContent = `Resep Favorit Tersimpan (\${favorites.length})`;
     renderRecipes(favorites);
 });
 
@@ -164,17 +154,16 @@ function renderRecipes(meals) {
             <div class="relative h-48 overflow-hidden bg-slate-100 dark:bg-slate-800">
                 <img src="${meal.strMealThumb}" alt="${meal.strMeal}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                 <button 
-                    class="fav-card-btn absolute top-3 right-3 p-2 rounded-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm shadow-sm hover:scale-110 transition-transform ${isFav ? 'text-rose-500' : 'text-slate-400 hover:text-rose-500'}"
+                    class="fav-card-btn absolute top-3 right-3 p-2 rounded-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm shadow-sm hover:scale-110 transition-transform \${isFav ? 'text-rose-500' : 'text-slate-400 hover:text-rose-500'}"
                     title="Simpan ke Favorit"
                 >
-                    <i data-lucide="heart" class="w-4 h-4 ${isFav ? 'fill-rose-500' : ''}"></i>
+                    <i data-lucide="heart" class="w-4 h-4 \${isFav ? 'fill-rose-500' : ''}"></i>
                 </button>
-                ${meal.strCategory ? `<span class="absolute bottom-3 left-3 px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-900/75 text-white backdrop-blur-sm">${meal.strCategory}</span>` : ''}
+                \${meal.strCategory ? `<span class="absolute bottom-3 left-3 px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-900/75 text-white backdrop-blur-sm">${meal.strCategory}</span>` : ''}
             </div>
             <div class="p-4 flex-1 flex flex-col justify-between">
                 <div>
-                    <h3 class="font-bold text-slate-900 dark:text-slate-100 text-base line-clamp-2 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">${meal.strMeal}</h3>
-                    ${meal.strArea ? `<p class="text-xs text-slate-500 dark:text-slate-400 mt-1 flex items-center gap-1"><i data-lucide="map-pin" class="w-3 h-3"></i> Masakan ${meal.strArea}</p>` : ''}
+                    <h3 class="font-bold text-slate-900 dark:text-slate-100 text-base line-clamp-2 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">${meal.strMeal}</h3>${meal.strArea ? `<p class="text-xs text-slate-500 dark:text-slate-400 mt-1 flex items-center gap-1"><i data-lucide="map-pin" class="w-3 h-3"></i> Masakan ${meal.strArea}</p>` : ''}
                 </div>
                 <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs font-semibold text-orange-600 dark:text-orange-400">
                     <span>Lihat Resep</span>
@@ -195,141 +184,10 @@ function renderRecipes(meals) {
         favBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             toggleFavorite(meal);
-            // Refresh tampilan jika sedang di tab Favorit
             if (sectionTitle.textContent.includes('Favorit')) {
                 renderRecipes(favorites);
-                sectionTitle.textContent = `Resep Favorit Tersimpan (${favorites.length})`;
+                sectionTitle.textContent = `Resep Favorit Tersimpan (\${favorites.length})`;
             } else {
                 const nowFav = favorites.some(f => f.idMeal === meal.idMeal);
-                favBtn.className = `fav-card-btn absolute top-3 right-3 p-2 rounded-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm shadow-sm hover:scale-110 transition-transform ${nowFav ? 'text-rose-500' : 'text-slate-400 hover:text-rose-500'}`;
-                favBtn.innerHTML = `<i data-lucide="heart" class="w-4 h-4 ${nowFav ? 'fill-rose-500' : ''}"></i>`;
-                lucide.createIcons();
-            }
-        });
-
-        recipeGrid.appendChild(card);
-    });
-
-    lucide.createIcons();
-}
-
-// Ambil Detail Lengkap Resep berdasarkan ID
-async function getMealDetails(id) {
-    try {
-        const res = await fetch(`${API_BASE}/lookup.php?i=${id}`);
-        const data = await res.json();
-        if (data.meals && data.meals[0]) {
-            openRecipeModal(data.meals[0]);
-        }
-    } catch (error) {
-        console.error('Gagal mengambil detail resep:', error);
-    }
-}
-
-// Buka Modal & Tampilkan Data Resep
-function openRecipeModal(meal) {
-    currentModalMeal = meal;
-    modalImg.src = meal.strMealThumb;
-    modalTitle.textContent = meal.strMeal;
-    modalCategory.textContent = meal.strCategory || 'Umum';
-    modalArea.textContent = meal.strArea ? `Kuliner ${meal.strArea}` : 'Internasional';
-    modalInstructions.textContent = meal.strInstructions;
-
-    // Link YouTube
-    if (meal.strYoutube) {
-        modalYoutube.href = meal.strYoutube;
-        modalYoutube.classList.remove('hidden');
-    } else {
-        modalYoutube.classList.add('hidden');
-    }
-
-    // Ekstrak Daftar Bahan & Takaran
-    modalIngredients.innerHTML = '';
-    for (let i = 1; i <= 20; i++) {
-        const ingredient = meal[`strIngredient${i}`];
-        const measure = meal[`strMeasure${i}`];
-
-        if (ingredient && ingredient.trim() !== '') {
-            const li = document.createElement('li');
-            li.className = 'flex items-center justify-between bg-slate-50 dark:bg-slate-800/60 px-3.5 py-2.5 rounded-xl border border-slate-100 dark:border-slate-800 text-sm';
-            li.innerHTML = `
-                <span class="font-medium text-slate-800 dark:text-slate-200">${ingredient}</span>
-                <span class="text-slate-500 dark:text-slate-400 font-semibold text-xs bg-white dark:bg-slate-900 px-2 py-1 rounded-md border border-slate-200/60 dark:border-slate-700">${measure || ''}</span>
-            `;
-            modalIngredients.appendChild(li);
-        }
-    }
-
-    updateModalFavButton();
-    modal.classList.remove('hidden');
-    modal.classList.add('flex');
-    document.body.style.overflow = 'hidden';
-}
-
-// Tutup Modal
-function closeModal() {
-    modal.classList.add('hidden');
-    modal.classList.remove('flex');
-    document.body.style.overflow = '';
-}
-
-closeModalBtn.addEventListener('click', closeModal);
-modal.addEventListener('click', (e) => {
-    if (e.target === modal) closeModal();
-});
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal();
-});
-
-// Simpan / Hapus Favorit
-modalFavBtn.addEventListener('click', () => {
-    if (currentModalMeal) {
-        toggleFavorite(currentModalMeal);
-        updateModalFavButton();
-    }
-});
-
-function toggleFavorite(meal) {
-    const index = favorites.findIndex(item => item.idMeal === meal.idMeal);
-    if (index === -1) {
-        favorites.push({
-            idMeal: meal.idMeal,
-            strMeal: meal.strMeal,
-            strMealThumb: meal.strMealThumb,
-            strCategory: meal.strCategory || '',
-            strArea: meal.strArea || ''
-        });
-    } else {
-        favorites.splice(index, 1);
-    }
-    localStorage.setItem('resepdapurmu_favorites', JSON.stringify(favorites));
-    updateFavBadge();
-}
-
-function updateFavBadge() {
-    favCountEl.textContent = favorites.length;
-}
-
-function updateModalFavButton() {
-    const isFav = favorites.some(item => item.idMeal === currentModalMeal.idMeal);
-    if (isFav) {
-        modalFavBtn.className = 'flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold bg-rose-50 dark:bg-rose-500/15 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-500/30 transition-colors cursor-pointer';
-        modalFavBtn.innerHTML = `<i data-lucide="heart" class="w-4 h-4 fill-rose-500"></i><span>Tersimpan di Favorit</span>`;
-    } else {
-        modalFavBtn.className = 'flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold border border-slate-200 dark:border-slate-700 hover:bg-rose-50 dark:hover:bg-rose-500/10 hover:border-rose-200 text-slate-700 dark:text-slate-300 transition-colors cursor-pointer';
-        modalFavBtn.innerHTML = `<i data-lucide="heart" class="w-4 h-4"></i><span>Simpan ke Favorit</span>`;
-    }
-    lucide.createIcons();
-}
-
-// Tampilkan/Sembunyikan Loading
-function showLoader(status) {
-    if (status) {
-        loader.classList.remove('hidden');
-        recipeGrid.classList.add('hidden');
-        emptyState.classList.add('hidden');
-    } else {
-        loader.classList.add('hidden');
-        recipeGrid.classList.remove('hidden');
-    }
-}
+                favBtn.className = `fav-card-btn absolute top-3 right-3 p-2 rounded-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm shadow-sm hover:scale-110 transition-transform \${nowFav ? 'text-rose-500' : 'text-slate-400 hover:text-rose-500'}`;
+                favBtn.innerHTML = `<i data-lucide="heart" class="w-4 h-4 ${nowFav ? 'fill-rose-500' : ''}"></i>`; lucide.createIcons(); } });  recipeGrid.appendChild(card); });  lucide.createIcons(); }  // Ambil Detail Lengkap Resep berdasarkan ID async function getMealDetails(id) { try { const res = await fetch(`${API
