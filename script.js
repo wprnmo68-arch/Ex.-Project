@@ -27,7 +27,7 @@ const modalFavBtn = document.getElementById('modal-fav-btn');
 
 // State Aplikasi
 const API_BASE = 'https://www.themealdb.com/api/json/v1/1';
-let favorites = JSON.parse(localStorage.getItem('dapurkita_favorites')) || [];
+let favorites = JSON.parse(localStorage.getItem('resepdapurmu_favorites')) || [];
 let currentModalMeal = null;
 
 // Jalankan saat halaman pertama kali dimuat
@@ -283,7 +283,7 @@ function toggleFavorite(meal) {
     } else {
         favorites.splice(index, 1);
     }
-    localStorage.setItem('dapurkita_favorites', JSON.stringify(favorites));
+    localStorage.setItem('resepdapurmu_favorites', JSON.stringify(favorites));
     updateFavBadge();
 }
 
