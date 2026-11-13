@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RasaNusantara & Dunia | Pencari Resep Modern</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased selection:bg-orange-500 selection:text-white">
+
+    <!-- Navbar -->
+    <nav class="sticky top-0 z-40 glass-nav border-b border-slate-200/70">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2.5 cursor-pointer" onclick="resetApp()">
+                <div class="bg-gradient-to-tr from-orange-500 to-amber-400 p-2 rounded-xl text-white shadow-md shadow-orange-500/20">
+                    <i data-lucide="chef-hat" class="w-6 h-6"></i>
+                </div>
+                <span class="font-extrabold text-xl tracking-tight text-slate-900">Dapur<span class="text-orange-500">Kita</span></span>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <button id="btn-favorites" class="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold bg-white border border-slate-200 hover:border-orange-300 hover:bg-orange-50 transition-all shadow-sm">
+                    <i data-lucide="heart" class="w-4 h-4 text-rose-500 fill-rose-500"></i>
+                    <span>Favorit</span>
+                    <span id="fav-count" class="bg-rose-100 text-rose-600 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero & Search Section -->
+    <header class="relative overflow-hidden pt-12 pb-16 sm:pt-16 sm:pb-20">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 text-center relative z-10">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-orange-100 text-orange-700 mb-4">
+                <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Ribuan Inspirasi Masakan Harian
+            </span>
+            <h1 class="text-3xl sm:text-5xl font-extrabold text-slate-900 tracking-tight mb-4 leading-tight">
+                Mau Masak Apa <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-amber-500">Hari Ini?</span>
+            </h1>
+            <p class="text-slate-500 text-base sm:text-lg max-w-2xl mx-auto mb-8">
+                Cari resep berdasarkan nama hidangan atau bahan utama yang ada di kulkasmu (gunakan kata kunci bahasa Inggris seperti <i>Chicken, Beef, Rice, Pasta</i> untuk hasil maksimal).
+            </p>
+
+            <!-- Search Bar -->
+            <form id="search-form" class="max-w-2xl mx-auto relative flex items-center">
+                <i data-lucide="search" class="w-5 h-5 text-slate-400 absolute left-5 pointer-events-none"></i>
+                <input 
+                    type="text" 
+                    id="search-input" 
+                    placeholder="Ketik nama makanan atau bahan (misal: Chicken, Rendang, Salmon)..." 
+                    class="w-full pl-13 pr-32 py-4 rounded-2xl bg-white border border-slate-200 shadow-lg shadow-slate-200/50 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent text-slate-800 placeholder:text-slate-400 transition-all"
+                >
+                <button 
+                    type="submit" 
+                    class="absolute right-2 bg-orange-500 hover:bg-orange-600 active:scale-95 text-white font-semibold px-6 py-2.5 rounded-xl transition-all shadow-md shadow-orange-500/25 cursor-pointer"
+                >
+                    Cari
+                </button>
+            </form>
+
+            <!-- Quick Categories -->
+            <div class="mt-6 flex flex-wrap items-center justify-center gap-2" id="quick-categories">
+                <span class="text-xs font-medium text-slate-400 mr-1">Populer:</span>
+                <button type="button" data-query="Chicken" class="cat-chip">🍗 Ayam</button>
+                <button type="button" data-query="Beef" class="cat-chip">🥩 Daging Sapi</button>
+                <button type="button" data-query="Seafood" class="cat-chip">🦐 Seafood</button>
+                <button type="button" data-query="Pasta" class="cat-chip">🍝 Pasta</button>
+                <button type="button" data-query="Dessert" class="cat-chip">🍰 Dessert</button>
+                <button type="button" data-query="Vegetarian" class="cat-chip">🥗 Vegetarian</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
+        <!-- Section Header -->
+        <div class="flex items-center justify-between mb-6">
+            <h2 id="section-title" class="text-xl font-bold text-slate-900">Rekomendasi Pilihan</h2>
+            <button id="btn-random" class="inline-flex items-center gap-1.5 text-sm font-semibold text-orange-600 hover:text-orange-700 bg-orange-50 hover:bg-orange-100 px-3.5 py-2 rounded-xl transition-colors">
+                <i data-lucide="shuffle" class="w-4 h-4"></i> Acak Resep
+            </button>
+        </div>
+
+        <!-- Loading Spinner -->
+        <div id="loader" class="hidden py-20 flex flex-col items-center justify-center">
+            <div class="w-10 h-10 border-4 border-orange-200 border-t-orange-500 rounded-full animate-spin mb-3"></div>
+            <p class="text-sm text-slate-500 font-medium">Menyiapkan dapur...</p>
+        </div>
+
+        <!-- Empty State -->
+        <div id="empty-state" class="hidden py-20 text-center max-w-md mx-auto">
+            <div class="bg-slate-100 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 text-slate-400">
+                <i data-lucide="utensils-crossed" class="w-8 h-8"></i>
+            </div>
+            <h3 class="text-lg font-bold text-slate-800 mb-1">Resep tidak ditemukan</h3>
+            <p class="text-sm text-slate-500">Coba gunakan kata kunci lain dalam bahasa Inggris seperti <i>"Egg"</i>, <i>"Soup"</i>, atau <i>"Cake"</i>.</p>
+        </div>
+
+        <!-- Recipe Grid -->
+        <div id="recipe-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <!-- Kartu resep akan dirender otomatis oleh JavaScript -->
+        </div>
+    </main>
+
+    <!-- Recipe Detail Modal -->
+    <div id="recipe-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 sm:p-6 bg-slate-900/60 backdrop-blur-sm transition-opacity">
+        <div class="bg-white rounded-3xl max-w-3xl w-full max-h-[90vh] overflow-hidden shadow-2xl flex flex-col animate-modal">
+            <!-- Modal Header Image -->
+            <div class="relative h-64 sm:h-72 shrink-0">
+                <img id="modal-img" src="" alt="Foto Makanan" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/20 to-transparent"></div>
+                
+                <button id="close-modal" class="absolute top-4 right-4 bg-white/90 hover:bg-white text-slate-800 p-2 rounded-full shadow-lg transition-transform hover:scale-105 cursor-pointer">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+
+                <div class="absolute bottom-4 left-6 right-6 text-white">
+                    <div class="flex flex-wrap gap-2 mb-2">
+                        <span id="modal-category" class="px-2.5 py-0.5 rounded-lg text-xs font-semibold bg-orange-500 text-white">Kategori</span>
+                        <span id="modal-area" class="px-2.5 py-0.5 rounded-lg text-xs font-semibold bg-white/20 backdrop-blur-md text-white">Asal Negara</span>
+                    </div>
+                    <h2 id="modal-title" class="text-2xl sm:text-3xl font-extrabold leading-tight">Nama Resep</h2>
+                </div>
+            </div>
+
+            <!-- Modal Body (Scrollable) -->
+            <div class="p-6 sm:p-8 overflow-y-auto space-y-6">
+                <!-- Action Bar -->
+                <div class="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-slate-100">
+                    <button id="modal-fav-btn" class="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold border border-slate-200 hover:bg-rose-50 hover:border-rose-200 transition-colors">
+                        <i data-lucide="heart" class="w-4 h-4"></i>
+                        <span>Simpan ke Favorit</span>
+                    </button>
+                    <a id="modal-youtube" href="#" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold bg-red-50 text-red-600 hover:bg-red-100 transition-colors">
+                        <i data-lucide="youtube" class="w-4 h-4"></i>
+                        <span>Tonton Video Tutorial</span>
+                    </a>
+                </div>
+
+                <!-- Ingredients -->
+                <div>
+                    <h3 class="text-lg font-bold text-slate-900 mb-3 flex items-center gap-2">
+                        <i data-lucide="shopping-basket" class="w-5 h-5 text-orange-500"></i> Bahan-Bahan
+                    </h3>
+                    <ul id="modal-ingredients" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                        <!-- List bahan dirender via JS -->
+                    </ul>
+                </div>
+
+                <!-- Instructions -->
+                <div>
+                    <h3 class="text-lg font-bold text-slate-900 mb-3 flex items-center gap-2">
+                        <i data-lucide="flame" class="w-5 h-5 text-orange-500"></i> Cara Membuat
+                    </h3>
+                    <div id="modal-instructions" class="text-slate-600 text-sm sm:text-base leading-relaxed space-y-3 whitespace-pre-line">
+                        <!-- Langkah memasak dirender via JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom JS -->
+    <script src="script.js"></script>
+</body>
+</html>
