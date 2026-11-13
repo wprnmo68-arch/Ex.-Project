@@ -1,0 +1,80 @@
+/* Pengaturan Font Global */
+body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+/* Padding input search agar ikon tidak bertabrakan */
+.pl-13 {
+    padding-left: 3.25rem;
+}
+
+/* Efek Glassmorphism pada Navbar */
+.glass-nav {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+/* Tombol Filter Kategori Cepat */
+.cat-chip {
+    padding: 0.4rem 0.9rem;
+    border-radius: 9999px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    background-color: #ffffff;
+    color: #475569;
+    border: 1px solid #e2e8f0;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.cat-chip:hover, .cat-chip.active {
+    background-color: #fff7ed;
+    color: #ea580c;
+    border-color: #fdba74;
+    transform: translateY(-1px);
+}
+
+/* Animasi Hover Kartu Resep */
+.recipe-card {
+    transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease;
+}
+
+.recipe-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
+}
+
+/* Animasi Munculnya Modal */
+@keyframes modalPop {
+    0% {
+        opacity: 0;
+        transform: scale(0.95) translateY(10px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.animate-modal {
+    animation: modalPop 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Kustomisasi Scrollbar di dalam Modal */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
