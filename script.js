@@ -13,6 +13,9 @@ const btnRandom = document.getElementById('btn-random');
 const btnFavorites = document.getElementById('btn-favorites');
 const favCountEl = document.getElementById('fav-count');
 
+// Elemen Theme Toggle
+const themeToggleBtn = document.getElementById('theme-toggle');
+
 // Elemen Modal
 const modal = document.getElementById('recipe-modal');
 const closeModalBtn = document.getElementById('close-modal');
@@ -32,9 +35,25 @@ let currentModalMeal = null;
 
 // Jalankan saat halaman pertama kali dimuat
 document.addEventListener('DOMContentLoaded', () => {
+    updateThemeIcon();
     updateFavBadge();
     fetchMealsBySearch('Chicken'); // Tampilan awal default
 });
+
+// Logika Dark / Light Mode
+themeToggleBtn.addEventListener('click', () => {
+    const isDark = document.documentElement.classList.toggle('dark');
+    localStorage.setItem('resepdapurmu_theme', isDark ? 'dark' : 'light');
+    updateThemeIcon();
+});
+
+function updateThemeIcon() {
+    const isDark = document.documentElement.classList.contains('dark');
+    themeToggleBtn.innerHTML = isDark 
+        ? `<i data-lucide="sun" class="w-4 h-4 text-amber-400"></i>` 
+        : `<i data-lucide="moon" class="w-4 h-4 text-slate-600"></i>`;
+    lucide.createIcons();
+}
 
 // Event Listener Pencarian
 searchForm.addEventListener('submit', (e) => {
@@ -139,13 +158,13 @@ function renderRecipes(meals) {
     meals.forEach(meal => {
         const isFav = favorites.some(fav => fav.idMeal === meal.idMeal);
         const card = document.createElement('div');
-        card.className = 'recipe-card bg-white rounded-2xl overflow-hidden border border-slate-200/80 flex flex-col cursor-pointer group';
+        card.className = 'recipe-card bg-white dark:bg-slate-900 rounded-2xl overflow-hidden border border-slate-200/80 dark:border-slate-800 flex flex-col cursor-pointer group';
         
         card.innerHTML = `
-            <div class="relative h-48 overflow-hidden bg-slate-100">
+            <div class="relative h-48 overflow-hidden bg-slate-100 dark:bg-slate-800">
                 <img src="${meal.strMealThumb}" alt="${meal.strMeal}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                 <button 
-                    class="fav-card-btn absolute top-3 right-3 p-2 rounded-full bg-white/90 backdrop-blur-sm shadow-sm hover:scale-110 transition-transform ${isFav ? 'text-rose-500' : 'text-slate-400 hover:text-rose-500'}"
+                    class="fav-card-btn absolute top-3 right-3 p-2 rounded-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm shadow-sm hover:scale-110 transition-transform ${isFav ? 'text-rose-500' : 'text-slate-400 hover:text-rose-500'}"
                     title="Simpan ke Favorit"
                 >
                     <i data-lucide="heart" class="w-4 h-4 ${isFav ? 'fill-rose-500' : ''}"></i>
@@ -154,10 +173,10 @@ function renderRecipes(meals) {
             </div>
             <div class="p-4 flex-1 flex flex-col justify-between">
                 <div>
-                    <h3 class="font-bold text-slate-900 text-base line-clamp-2 group-hover:text-orange-600 transition-colors">${meal.strMeal}</h3>
-                    ${meal.strArea ? `<p class="text-xs text-slate-500 mt-1 flex items-center gap-1"><i data-lucide="map-pin" class="w-3 h-3"></i> Masakan ${meal.strArea}</p>` : ''}
+                    <h3 class="font-bold text-slate-900 dark:text-slate-100 text-base line-clamp-2 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">${meal.strMeal}</h3>
+                    ${meal.strArea ? `<p class="text-xs text-slate-500 dark:text-slate-400 mt-1 flex items-center gap-1"><i data-lucide="map-pin" class="w-3 h-3"></i> Masakan ${meal.strArea}</p>` : ''}
                 </div>
-                <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-orange-600">
+                <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs font-semibold text-orange-600 dark:text-orange-400">
                     <span>Lihat Resep</span>
                     <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
                 </div>
@@ -182,7 +201,7 @@ function renderRecipes(meals) {
                 sectionTitle.textContent = `Resep Favorit Tersimpan (${favorites.length})`;
             } else {
                 const nowFav = favorites.some(f => f.idMeal === meal.idMeal);
-                favBtn.className = `fav-card-btn absolute top-3 right-3 p-2 rounded-full bg-white/90 backdrop-blur-sm shadow-sm hover:scale-110 transition-transform ${nowFav ? 'text-rose-500' : 'text-slate-400 hover:text-rose-500'}`;
+                favBtn.className = `fav-card-btn absolute top-3 right-3 p-2 rounded-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm shadow-sm hover:scale-110 transition-transform ${nowFav ? 'text-rose-500' : 'text-slate-400 hover:text-rose-500'}`;
                 favBtn.innerHTML = `<i data-lucide="heart" class="w-4 h-4 ${nowFav ? 'fill-rose-500' : ''}"></i>`;
                 lucide.createIcons();
             }
@@ -224,7 +243,7 @@ function openRecipeModal(meal) {
         modalYoutube.classList.add('hidden');
     }
 
-    // Ekstrak Daftar Bahan & Takaran (API menyimpan strIngredient1..20)
+    // Ekstrak Daftar Bahan & Takaran
     modalIngredients.innerHTML = '';
     for (let i = 1; i <= 20; i++) {
         const ingredient = meal[`strIngredient${i}`];
@@ -232,10 +251,10 @@ function openRecipeModal(meal) {
 
         if (ingredient && ingredient.trim() !== '') {
             const li = document.createElement('li');
-            li.className = 'flex items-center justify-between bg-slate-50 px-3.5 py-2.5 rounded-xl border border-slate-100 text-sm';
+            li.className = 'flex items-center justify-between bg-slate-50 dark:bg-slate-800/60 px-3.5 py-2.5 rounded-xl border border-slate-100 dark:border-slate-800 text-sm';
             li.innerHTML = `
-                <span class="font-medium text-slate-800">${ingredient}</span>
-                <span class="text-slate-500 font-semibold text-xs bg-white px-2 py-1 rounded-md border border-slate-200/60">${measure || ''}</span>
+                <span class="font-medium text-slate-800 dark:text-slate-200">${ingredient}</span>
+                <span class="text-slate-500 dark:text-slate-400 font-semibold text-xs bg-white dark:bg-slate-900 px-2 py-1 rounded-md border border-slate-200/60 dark:border-slate-700">${measure || ''}</span>
             `;
             modalIngredients.appendChild(li);
         }
@@ -244,7 +263,7 @@ function openRecipeModal(meal) {
     updateModalFavButton();
     modal.classList.remove('hidden');
     modal.classList.add('flex');
-    document.body.style.overflow = 'hidden'; // Kunci scroll latar belakang
+    document.body.style.overflow = 'hidden';
 }
 
 // Tutup Modal
@@ -294,10 +313,10 @@ function updateFavBadge() {
 function updateModalFavButton() {
     const isFav = favorites.some(item => item.idMeal === currentModalMeal.idMeal);
     if (isFav) {
-        modalFavBtn.className = 'flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold bg-rose-50 text-rose-600 border border-rose-200 transition-colors cursor-pointer';
+        modalFavBtn.className = 'flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold bg-rose-50 dark:bg-rose-500/15 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-500/30 transition-colors cursor-pointer';
         modalFavBtn.innerHTML = `<i data-lucide="heart" class="w-4 h-4 fill-rose-500"></i><span>Tersimpan di Favorit</span>`;
     } else {
-        modalFavBtn.className = 'flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold border border-slate-200 hover:bg-rose-50 hover:border-rose-200 text-slate-700 transition-colors cursor-pointer';
+        modalFavBtn.className = 'flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold border border-slate-200 dark:border-slate-700 hover:bg-rose-50 dark:hover:bg-rose-500/10 hover:border-rose-200 text-slate-700 dark:text-slate-300 transition-colors cursor-pointer';
         modalFavBtn.innerHTML = `<i data-lucide="heart" class="w-4 h-4"></i><span>Simpan ke Favorit</span>`;
     }
     lucide.createIcons();
