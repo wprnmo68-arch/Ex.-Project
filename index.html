@@ -1,35 +1,55 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ResepDapurmu | Pencari Resep Modern</title>
-    <!-- Tailwind CSS CDN -->
+    <!-- Tailwind CSS CDN & Konfigurasi Dark Mode -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
     <!-- Google Fonts: Plus Jakarta Sans -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <!-- Custom CSS -->
     <link rel="stylesheet" href="style.css">
+    <!-- Skrip Anti-Flicker (Memuat tema tersimpan sebelum halaman dirender) -->
+    <script>
+        if (localStorage.getItem('resepdapurmu_theme') === 'dark' || 
+           (!('resepdapurmu_theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
 </head>
-<body class="bg-slate-50 text-slate-800 antialiased selection:bg-orange-500 selection:text-white">
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 antialiased selection:bg-orange-500 selection:text-white transition-colors duration-300">
 
     <!-- Navbar -->
-    <nav class="sticky top-0 z-40 glass-nav border-b border-slate-200/70">
+    <nav class="sticky top-0 z-40 glass-nav border-b border-slate-200/70 dark:border-slate-800/80 transition-colors duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div class="flex items-center gap-2.5 cursor-pointer" onclick="resetApp()">
                 <div class="bg-gradient-to-tr from-orange-500 to-amber-400 p-2 rounded-xl text-white shadow-md shadow-orange-500/20">
                     <i data-lucide="chef-hat" class="w-6 h-6"></i>
                 </div>
-                <span class="font-extrabold text-xl tracking-tight text-slate-900">Resep<span class="text-orange-500">Dapurmu</span></span>
+                <span class="font-extrabold text-xl tracking-tight text-slate-900 dark:text-white">Resep<span class="text-orange-500">Dapurmu</span></span>
             </div>
 
-            <div class="flex items-center gap-3">
-                <button id="btn-favorites" class="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold bg-white border border-slate-200 hover:border-orange-300 hover:bg-orange-50 transition-all shadow-sm">
+            <div class="flex items-center gap-2.5">
+                <!-- Tombol Toggle Tema Gelap/Terang -->
+                <button id="theme-toggle" type="button" title="Ganti Tema Gelap/Terang" class="p-2.5 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-amber-400 hover:border-orange-300 dark:hover:border-slate-700 hover:bg-orange-50 dark:hover:bg-slate-800 transition-all shadow-sm cursor-pointer">
+                    <i id="theme-icon" data-lucide="moon" class="w-4 h-4"></i>
+                </button>
+
+                <!-- Tombol Favorit -->
+                <button id="btn-favorites" class="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 hover:border-orange-300 dark:hover:border-slate-700 hover:bg-orange-50 dark:hover:bg-slate-800 transition-all shadow-sm cursor-pointer">
                     <i data-lucide="heart" class="w-4 h-4 text-rose-500 fill-rose-500"></i>
                     <span>Favorit</span>
-                    <span id="fav-count" class="bg-rose-100 text-rose-600 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
+                    <span id="fav-count" class="bg-rose-100 dark:bg-rose-500/20 text-rose-600 dark:text-rose-400 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
                 </button>
             </div>
         </div>
@@ -38,24 +58,24 @@
     <!-- Hero & Search Section -->
     <header class="relative overflow-hidden pt-12 pb-16 sm:pt-16 sm:pb-20">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 text-center relative z-10">
-            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-orange-100 text-orange-700 mb-4">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-orange-100 dark:bg-orange-500/15 text-orange-700 dark:text-orange-400 mb-4">
                 <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Ribuan Inspirasi Masakan Harian
             </span>
-            <h1 class="text-3xl sm:text-5xl font-extrabold text-slate-900 tracking-tight mb-4 leading-tight">
+            <h1 class="text-3xl sm:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-4 leading-tight">
                 Mau Masak Apa <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-amber-500">Hari Ini?</span>
             </h1>
-            <p class="text-slate-500 text-base sm:text-lg max-w-2xl mx-auto mb-8">
+            <p class="text-slate-500 dark:text-slate-400 text-base sm:text-lg max-w-2xl mx-auto mb-8">
                 Cari resep berdasarkan nama hidangan atau bahan utama yang ada di kulkasmu (gunakan kata kunci bahasa Inggris seperti <i>Chicken, Beef, Rice, Pasta</i> untuk hasil maksimal).
             </p>
 
             <!-- Search Bar -->
             <form id="search-form" class="max-w-2xl mx-auto relative flex items-center">
-                <i data-lucide="search" class="w-5 h-5 text-slate-400 absolute left-5 pointer-events-none"></i>
+                <i data-lucide="search" class="w-5 h-5 text-slate-400 dark:text-slate-500 absolute left-5 pointer-events-none"></i>
                 <input 
                     type="text" 
                     id="search-input" 
                     placeholder="Ketik nama makanan atau bahan (misal: Chicken, Rendang, Salmon)..." 
-                    class="w-full pl-13 pr-32 py-4 rounded-2xl bg-white border border-slate-200 shadow-lg shadow-slate-200/50 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent text-slate-800 placeholder:text-slate-400 transition-all"
+                    class="w-full pl-13 pr-32 py-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-lg shadow-slate-200/50 dark:shadow-none focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 transition-all"
                 >
                 <button 
                     type="submit" 
@@ -67,7 +87,7 @@
 
             <!-- Quick Categories -->
             <div class="mt-6 flex flex-wrap items-center justify-center gap-2" id="quick-categories">
-                <span class="text-xs font-medium text-slate-400 mr-1">Populer:</span>
+                <span class="text-xs font-medium text-slate-400 dark:text-slate-500 mr-1">Populer:</span>
                 <button type="button" data-query="Chicken" class="cat-chip">🍗 Ayam</button>
                 <button type="button" data-query="Beef" class="cat-chip">🥩 Daging Sapi</button>
                 <button type="button" data-query="Seafood" class="cat-chip">🦐 Seafood</button>
@@ -82,25 +102,25 @@
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
         <!-- Section Header -->
         <div class="flex items-center justify-between mb-6">
-            <h2 id="section-title" class="text-xl font-bold text-slate-900">Rekomendasi Pilihan</h2>
-            <button id="btn-random" class="inline-flex items-center gap-1.5 text-sm font-semibold text-orange-600 hover:text-orange-700 bg-orange-50 hover:bg-orange-100 px-3.5 py-2 rounded-xl transition-colors">
+            <h2 id="section-title" class="text-xl font-bold text-slate-900 dark:text-white">Rekomendasi Pilihan</h2>
+            <button id="btn-random" class="inline-flex items-center gap-1.5 text-sm font-semibold text-orange-600 dark:text-orange-400 hover:text-orange-700 dark:hover:text-orange-300 bg-orange-50 dark:bg-orange-500/15 hover:bg-orange-100 dark:hover:bg-orange-500/25 px-3.5 py-2 rounded-xl transition-colors cursor-pointer">
                 <i data-lucide="shuffle" class="w-4 h-4"></i> Acak Resep
             </button>
         </div>
 
         <!-- Loading Spinner -->
         <div id="loader" class="hidden py-20 flex flex-col items-center justify-center">
-            <div class="w-10 h-10 border-4 border-orange-200 border-t-orange-500 rounded-full animate-spin mb-3"></div>
-            <p class="text-sm text-slate-500 font-medium">Menyiapkan dapur...</p>
+            <div class="w-10 h-10 border-4 border-orange-200 dark:border-slate-800 border-t-orange-500 rounded-full animate-spin mb-3"></div>
+            <p class="text-sm text-slate-500 dark:text-slate-400 font-medium">Menyiapkan dapur...</p>
         </div>
 
         <!-- Empty State -->
         <div id="empty-state" class="hidden py-20 text-center max-w-md mx-auto">
-            <div class="bg-slate-100 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 text-slate-400">
+            <div class="bg-slate-100 dark:bg-slate-900 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 text-slate-400 dark:text-slate-500">
                 <i data-lucide="utensils-crossed" class="w-8 h-8"></i>
             </div>
-            <h3 class="text-lg font-bold text-slate-800 mb-1">Resep tidak ditemukan</h3>
-            <p class="text-sm text-slate-500">Coba gunakan kata kunci lain dalam bahasa Inggris seperti <i>"Egg"</i>, <i>"Soup"</i>, atau <i>"Cake"</i>.</p>
+            <h3 class="text-lg font-bold text-slate-800 dark:text-slate-200 mb-1">Resep tidak ditemukan</h3>
+            <p class="text-sm text-slate-500 dark:text-slate-400">Coba gunakan kata kunci lain dalam bahasa Inggris seperti <i>"Egg"</i>, <i>"Soup"</i>, atau <i>"Cake"</i>.</p>
         </div>
 
         <!-- Recipe Grid -->
@@ -110,14 +130,14 @@
     </main>
 
     <!-- Recipe Detail Modal -->
-    <div id="recipe-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 sm:p-6 bg-slate-900/60 backdrop-blur-sm transition-opacity">
-        <div class="bg-white rounded-3xl max-w-3xl w-full max-h-[90vh] overflow-hidden shadow-2xl flex flex-col animate-modal">
+    <div id="recipe-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 sm:p-6 bg-slate-900/70 dark:bg-black/80 backdrop-blur-sm transition-opacity">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl max-w-3xl w-full max-h-[90vh] overflow-hidden shadow-2xl border border-transparent dark:border-slate-800 flex flex-col animate-modal">
             <!-- Modal Header Image -->
             <div class="relative h-64 sm:h-72 shrink-0">
                 <img id="modal-img" src="" alt="Foto Makanan" class="w-full h-full object-cover">
-                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/20 to-transparent"></div>
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-900/30 to-transparent"></div>
                 
-                <button id="close-modal" class="absolute top-4 right-4 bg-white/90 hover:bg-white text-slate-800 p-2 rounded-full shadow-lg transition-transform hover:scale-105 cursor-pointer">
+                <button id="close-modal" class="absolute top-4 right-4 bg-white/90 dark:bg-slate-900/90 hover:bg-white dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 p-2 rounded-full shadow-lg transition-transform hover:scale-105 cursor-pointer">
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
 
@@ -133,12 +153,12 @@
             <!-- Modal Body (Scrollable) -->
             <div class="p-6 sm:p-8 overflow-y-auto space-y-6">
                 <!-- Action Bar -->
-                <div class="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-slate-100">
-                    <button id="modal-fav-btn" class="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold border border-slate-200 hover:bg-rose-50 hover:border-rose-200 transition-colors">
+                <div class="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-slate-100 dark:border-slate-800">
+                    <button id="modal-fav-btn" class="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold border border-slate-200 dark:border-slate-700 hover:bg-rose-50 dark:hover:bg-rose-500/10 hover:border-rose-200 transition-colors">
                         <i data-lucide="heart" class="w-4 h-4"></i>
                         <span>Simpan ke Favorit</span>
                     </button>
-                    <a id="modal-youtube" href="#" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold bg-red-50 text-red-600 hover:bg-red-100 transition-colors">
+                    <a id="modal-youtube" href="#" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold bg-red-50 dark:bg-red-500/15 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-500/25 transition-colors">
                         <i data-lucide="youtube" class="w-4 h-4"></i>
                         <span>Tonton Video Tutorial</span>
                     </a>
@@ -146,7 +166,7 @@
 
                 <!-- Ingredients -->
                 <div>
-                    <h3 class="text-lg font-bold text-slate-900 mb-3 flex items-center gap-2">
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
                         <i data-lucide="shopping-basket" class="w-5 h-5 text-orange-500"></i> Bahan-Bahan
                     </h3>
                     <ul id="modal-ingredients" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
@@ -156,10 +176,10 @@
 
                 <!-- Instructions -->
                 <div>
-                    <h3 class="text-lg font-bold text-slate-900 mb-3 flex items-center gap-2">
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
                         <i data-lucide="flame" class="w-5 h-5 text-orange-500"></i> Cara Membuat
                     </h3>
-                    <div id="modal-instructions" class="text-slate-600 text-sm sm:text-base leading-relaxed space-y-3 whitespace-pre-line">
+                    <div id="modal-instructions" class="text-slate-600 dark:text-slate-300 text-sm sm:text-base leading-relaxed space-y-3 whitespace-pre-line">
                         <!-- Langkah memasak dirender via JS -->
                     </div>
                 </div>
